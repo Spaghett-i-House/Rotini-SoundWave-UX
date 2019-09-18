@@ -1,0 +1,266 @@
+<html>
+  
+  <head>
+    <title>Rotini</title>
+    <script type="text/javascript" src="rotini.js"></script>
+    <script src="https://mdn.github.io/webgl-examples/tutorial/gl-matrix.js"></script>
+  </head>
+  
+  <body>
+
+    <canvas id="glCanvas" width="1880" height="1000"></canvas>
+
+    <svg id="loading-spinner" xmlns="http://www.w3.org/2000/svg" width="600" height="350" viewBox="0 0 600 320">
+      <defs>
+
+        <linearGradient id="rb-1">
+          <stop offset="0%">
+            <animate attributeName="stop-color" values="violet; red" dur="2s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%">
+            <animate attributeName="stop-color" values="red; orange" dur="2s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <linearGradient id="rb-2">
+          <stop offset="0%">
+            <animate attributeName="stop-color" values="orange; yellow" dur="2s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%">
+            <animate attributeName="stop-color" values="red; orange" dur="2s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <linearGradient id="rb-3">
+          <stop offset="0%">
+            <animate attributeName="stop-color" values="orange; yellow" dur="2s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%">
+            <animate attributeName="stop-color" values="yellow; green" dur="2s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <linearGradient id="rb-4">
+          <stop offset="0%">
+            <animate attributeName="stop-color" values="green; blue" dur="2s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%">
+            <animate attributeName="stop-color" values="yellow; green" dur="2s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <linearGradient id="rb-5">
+          <stop offset="0%">
+            <animate attributeName="stop-color" values="green; blue" dur="2s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%">
+            <animate attributeName="stop-color" values="blue; indigo" dur="2s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <linearGradient id="rb-6">
+          <stop offset="0%">
+            <animate attributeName="stop-color" values="indigo; violet" dur="2s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%">
+            <animate attributeName="stop-color" values="blue; indigo" dur="2s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <linearGradient id="rb-7">
+          <stop offset="0%">
+            <animate attributeName="stop-color" values="red; violet" dur="2s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%">
+            <animate attributeName="stop-color" values="orange; red" dur="2s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <linearGradient id="rb-8">
+          <stop offset="0%">
+            <animate attributeName="stop-color" values="yellow; orange" dur="2s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%">
+            <animate attributeName="stop-color" values="orange; red" dur="2s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <linearGradient id="rb-9">
+          <stop offset="0%">
+            <animate attributeName="stop-color" values="yellow; orange" dur="2s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%">
+            <animate attributeName="stop-color" values="green; yellow" dur="2s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <linearGradient id="rb-10">
+          <stop offset="0%">
+            <animate attributeName="stop-color" values="blue; green" dur="2s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%">
+            <animate attributeName="stop-color" values="green; yellow" dur="2s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <linearGradient id="rb-11">
+          <stop offset="0%">
+            <animate attributeName="stop-color" values="blue; green" dur="2s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%">
+            <animate attributeName="stop-color" values="indigo; blue" dur="2s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <linearGradient id="rb-12">
+          <stop offset="0%">
+            <animate attributeName="stop-color" values="blue; indigo" dur="2s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%">
+            <animate attributeName="stop-color" values="violet; blue" dur="2s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <linearGradient id="rtnigrad">
+          <stop offset="0%">
+            <animate attributeName="stop-color" values="red; orange; yellow; green; blue; indigo; violet; red" dur="2s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%">
+            <animate attributeName="stop-color" values="violet; indigo; blue; green; yellow; orange; red; violet" dur="2s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <style>
+          .rtni {
+            stroke: #000;
+            stroke-width: 6px;
+            fill: url('#rtnigrad');
+            fill-rule: nonzero;
+          }
+          .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8, .cls-9, .cls-10, .cls-11, .cls-12 {
+            stroke-width: 20px;
+            fill: none;
+          }
+          .cls-1 { stroke: url('#rb-1'); }
+          .cls-2 { stroke: url('#rb-2'); }
+          .cls-3 { stroke: url('#rb-3'); }
+          .cls-4 { stroke: url('#rb-4'); }
+          .cls-5 { stroke: url('#rb-5'); }
+          .cls-6 { stroke: url('#rb-6'); }
+          .cls-7 { stroke: url('#rb-7'); }
+          .cls-8 { stroke: url('#rb-8'); }
+          .cls-9 { stroke: url('#rb-9'); }
+          .cls-10 { stroke: url('#rb-10'); }
+          .cls-11 { stroke: url('#rb-11'); }
+          .cls-12 { stroke: url('#rb-12'); }
+          .gl1 { animation: ly1 2s ease-in-out infinite !important; }
+          .gl2 { animation: ly2 2s ease-in-out infinite !important; }
+          .gl3 { animation: ly3 2s ease-in-out infinite !important; }
+          .gl4 { animation: ly4 2s ease-in-out infinite !important; }
+          .gl5 { animation: ly5 2s ease-in-out infinite !important; }
+          .gl6 { animation: ly6 2s ease-in-out infinite !important; }
+          .gr1 { animation: ry1 2s ease-in-out infinite !important; }
+          .gr2 { animation: ry2 2s ease-in-out infinite !important; }
+          .gr3 { animation: ry3 2s ease-in-out infinite !important; }
+          .gr4 { animation: ry4 2s ease-in-out infinite !important; }
+          .gr5 { animation: ry5 2s ease-in-out infinite !important; }
+          .gr6 { animation: ry6 2s ease-in-out infinite !important; }
+
+          @keyframes ly1 {
+            from { transform: translateX(-590px); }
+            to { transform: translateX(8px); }
+          }
+          @keyframes ly2 {
+            from { transform: translateX(-390px) scaleX(-1); }
+            to { transform: translateX(208px) scaleX(-1); }
+          }
+          @keyframes ly3 {
+            from { transform: translateX(-392px); }
+            to { transform: translateX(206px); }
+          }
+          @keyframes ly4 {
+            from { transform: translateX(-192px) scaleX(-1); }
+            to { transform: translateX(406px) scaleX(-1); }
+          }
+          @keyframes ly5 {
+            from { transform: translateX(-194px); }
+            to { transform: translateX(404px); }
+          }
+          @keyframes ly6 {
+            from { transform: translateX(4px) scaleX(-1); }
+            to { transform: translateX(602px) scaleX(-1); }
+          }
+          @keyframes ry1 {
+            from { transform: translateX(10px); }
+            to { transform: translateX(608px); }
+          }
+          @keyframes ry2 {
+            from { transform: translateX(210px) scaleX(-1); }
+            to { transform: translateX(808px) scaleX(-1); }
+          }
+          @keyframes ry3 {
+            from { transform: translateX(208px); }
+            to { transform: translateX(806px); }
+          }
+          @keyframes ry4 {
+            from { transform: translateX(408px) scaleX(-1); }
+            to { transform: translateX(1006px) scaleX(-1); }
+          }
+          @keyframes ry5 {
+            from { transform: translateX(406px); }
+            to { transform: translateX(1004px); }
+          }
+          @keyframes ry6 {
+            from { transform: translateX(604px) scaleX(-1); }
+            to { transform: translateX(1202px) scaleX(-1); }
+          }
+        </style>
+      </defs>
+
+      <g class="gl2">
+        <path d="M0.499,290.031 C40.204,290.031 60.144,0.500 100.562,0.500" class="cls-8 "/>
+      </g>
+      <g class="gl4">
+        <path d="M0.499,290.031 C40.204,290.031 60.144,0.500 100.562,0.500" class="cls-10"/>
+      </g>
+      <g class="gl6">
+        <path d="M0.499,290.031 C40.204,290.031 60.144,0.500 100.562,0.500" class="cls-12"/>
+      </g>
+
+      <g class="gr2">
+        <path d="M0.499,290.031 C40.204,290.031 60.144,0.500 100.562,0.500" class="cls-2 "/>
+      </g>
+      <g class="gr4">
+        <path d="M0.499,290.031 C40.204,290.031 60.144,0.500 100.562,0.500" class="cls-4"/>
+      </g>
+      <g class="gr6">
+        <path d="M0.499,290.031 C40.204,290.031 60.144,0.500 100.562,0.500" class="cls-6"/>
+      </g>
+
+      <g transform="translate(40 70) scale(0.75)">
+        <path d="M672.5 140.5c-8.482 30.624-21.192 47.863-37 48-12.202.106-26.032-17.991-34.115-44.814-8.573 26.888-23.496 44.736-36.885 44.814-15.812.092-31.605-20.418-43.338-43.231-7.514 21.312-18.794 43.143-33.662 43.231-22.199.132-35.784-17.535-42.923-43.251-8.484 25.111-23.625 43.251-39.077 43.251-14.468 0-29.566-20.089-38.628-43.293-.12.442-.244.874-.372 1.293-8.768 28.613-18.547 40.828-34 42-21.982 1.667-35.064-18.445-42.477-42.464-9.091 22.623-22.839 42.552-38.523 42.464-16.1-.09-30.178-17.883-38.391-43.717-10.184 23.938-27.19 40.576-43.727 42.825-.456.062-.918-.133-1.382-.108-20.298 1.085-28.783-25.209-31.113-41.809-9.699 19.068-24.548 31.152-40.387 30.809-10.423-.226-13.334-13.758-30-35-7.484-9.54-28.742-22.673-36.481-33.171-3.169-4.299-22.006-6.382-27.892-12.752-6.455-6.985 8.817-21.952 1.001-24.977-5.152-1.994 11.171-19.339 20.02-16.984 5.144 1.369 5.151 7.275 10.01 6.993 3.621-.209 3.514-.883 7.007-4.995 3.844-4.526 20.807-1.922 28.028-2.997 10.256-1.528 6.969-.881 18.018-7.993 20.149-12.969 31.136-32.111 44.517-32.138 7.182-.015 9.923 6.179 9.549 14.157-.205 4.373 1.913 8.759 4.688 13.057C154.094 17.017 166.444.361 184.5.5c14.549.112 24.325 17.136 28.665 39.463C221.213 15.574 234.973.373 251.5.5c16.646.127 30.291 18.659 39.097 41.283C299.271 19.056 313.489.5 330.5.5c17.021 0 30.615 13.52 36.649 40.787C374.36 18.839 387.185.352 409.5.5c17.924.119 28.516 18.599 34.585 41.181C450.718 17.808 463.558.387 485.5.5c19.685.101 30.504 20.016 36.599 42.879C531.055 22.106 544.078.608 563.5.5c19.463-.109 30.995 18.295 37.506 40.344C607.932 16.243 620.001.379 635.5.5c19.528.152 27.87 22.353 37 45 7.539 18.699 20.466 32.854 20 47-.418 12.677-17.089 37.49-20 48z" class="rtni"/>
+      </g>
+
+      <g class="gl1">
+        <path d="M0.499,290.031 C40.204,290.031 60.144,0.500 100.562,0.500" class="cls-7"/>
+      </g>
+      <g class="gl3">
+        <path d="M0.499,290.031 C40.204,290.031 60.144,0.500 100.562,0.500" class="cls-9"/>
+      </g>
+      <g class="gl5">
+        <path d="M0.499,290.031 C40.204,290.031 60.144,0.500 100.562,0.500" class="cls-11"/>
+      </g>
+
+      <g class="gr1">
+        <path d="M0.499,290.031 C40.204,290.031 60.144,0.500 100.562,0.500" class="cls-1"/>
+      </g>
+      <g class="gr3">
+        <path d="M0.499,290.031 C40.204,290.031 60.144,0.500 100.562,0.500" class="cls-3"/>
+      </g>
+      <g class="gr5">
+        <path d="M0.499,290.031 C40.204,290.031 60.144,0.500 100.562,0.500" class="cls-5"/>
+      </g>
+    </svg>
+    
+  </body>
+</html>
