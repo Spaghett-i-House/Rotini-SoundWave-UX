@@ -1,4 +1,5 @@
-vertexCount = 0;
+var vertexCount = 0;
+var cScale = 1;
 
 // Initiates a given shader program
 function initShaderProgram(gl, vsSource, fsSource) {
@@ -91,8 +92,14 @@ function main() {
 	// objects we'll be drawing.
 	const buffers = initBuffers(gl);
 
-	// Draw the scene
-	drawScene(gl, programInfo, buffers);
+	// Draw the scene repeatedly
+	function render(now) {
+		now *= 0.001;  // convert to seconds
+		drawScene(gl, programInfo, buffers, now);
+
+		requestAnimationFrame(render);
+	}
+	requestAnimationFrame(render);
 }
 
 function initBuffers(gl) {
@@ -125,10 +132,9 @@ function initBuffers(gl) {
 
 	// Array of colors to do
 	const colors = [
-		col.r, col.g, col.b, col.a // RGB COLOR
+		col.r, col.g, col.b, col.a // START WITH ONE
 	];
-
-	for (i = 0; i <= cFidelity; i++){
+	for (i = 0; i <= cFidelity; i++) {
 		colors.push(col.r, col.g, col.b, col.a);
 	}
 
@@ -142,7 +148,7 @@ function initBuffers(gl) {
 	};
 }
 
-function drawScene(gl, programInfo, buffers) {
+function drawScene(gl, programInfo, buffers, now) {
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black, fully opaque
 	gl.clearDepth(1.0);                 // Clear everything
 	gl.enable(gl.DEPTH_TEST);           // Enable depth testing
@@ -172,11 +178,16 @@ function drawScene(gl, programInfo, buffers) {
 	const modelViewMatrix = mat4.create();
 
 	// Now move the drawing position a bit to where we want to
-	// start drawing the.
+	// start drawing.
 
 	mat4.translate(modelViewMatrix,     // destination matrix
 	         modelViewMatrix,     		// matrix to translate
 	         [-0.0, 0.0, -6.0]);  		// amount to translate
+
+	// And then scale the matrix by said amount
+	mat4.scale(modelViewMatrix,  		// destination matrix
+     		  modelViewMatrix,     		// matrix to scale
+	          [cScale, cScale, cScale]);   // amount to scale
 
 	// position buffer -> vertexAttribute pointer
 	{
@@ -231,6 +242,13 @@ function drawScene(gl, programInfo, buffers) {
 		const offset = 0;
 		gl.drawArrays(gl.TRIANGLE_FAN, offset, vertexCount);
 	}
+
+	// Pulse big and small
+	const scaleF = 0.02;
+	const speedF = 10;
+
+	// console.log(Math.pow(Math.sin(speedF * now), 3));
+	cScale += scaleF * Math.pow(Math.sin(speedF * now), 3);
 }
 
 // hex/opac to RGBA from 0 to 1
