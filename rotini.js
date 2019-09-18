@@ -61,7 +61,7 @@ void main() {
 
 function main() {
 	// <-- COMMENT THIS OUT TO VIEW LOADING SPINNER -->
-	document.querySelector("body").removeChild(document.querySelector("#loading-spinner"));
+	// document.querySelector("body").removeChild(document.querySelector("#loading-spinner"));
 
 	const canvas = document.querySelector("#glCanvas");
 	// Initialize the GL context
