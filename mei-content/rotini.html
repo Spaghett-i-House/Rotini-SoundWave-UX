@@ -1,0 +1,32 @@
+<html>
+  
+  <head>
+    <title>Rotini</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="./rotini.css">
+
+    <script type="text/javascript" src="helpers.js"></script>
+    <script type="text/javascript" src="rotini.js"></script>
+    <script type="text/javascript" src="buttons.js"></script>
+    <script src="https://mdn.github.io/webgl-examples/tutorial/gl-matrix.js"></script>
+  </head>
+  
+  <body>
+	<a onclick="oc_hide()"><img id="settings-gear" src="icos/gearicon.png"></a>
+
+	<div class="sidenav">
+		<div class="slidecontainer" id="resSlider">
+		  <input type="range" min="0.0" max="1.0" value=".75" step=".01" class="slider" id="resRange" oninput="oi_resolution()">
+		</div>
+		<a onclick="oc_resolution()">Resolution</a>
+
+		<a>Opacity</a>
+		<a>Customization</a>
+		<a>Spaghetti</a>
+		<a>$500,000</a>
+	</div>
+
+    <canvas id="glCanvas" width="1280" height="720"></canvas>
+  </body>
+
+</html>

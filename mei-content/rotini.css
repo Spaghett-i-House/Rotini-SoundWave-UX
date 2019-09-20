@@ -1,0 +1,97 @@
+a:hover {
+	cursor: pointer;
+}
+
+#glCanvas {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+.sidenav {
+  position: fixed;
+  height: 100%;
+  width: 160px;
+  transition: right 0.3s;
+  vertical-align: top;
+
+  padding-top: 400px;
+  top: 0;
+  right: -200px;
+
+  z-index: 2;
+  opacity: 0.5;
+}
+
+.sidenav a {
+  height: 40px;
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 20px;
+  display: block;
+
+  font-family: "Roboto";
+  font-weight: 500;
+  color: #FF69B4;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+#settings-gear {
+  position: fixed;
+  z-index: 3;
+  bottom: 50;
+  right: 50;
+
+  width: 50px;
+  height: 50px;
+}
+
+#settings-gear:hover {
+  cursor: pointer;
+}
+
+.slidecontainer {
+  display: none;
+  opacity: 0;
+  position: relative;
+
+  z-index: 1;
+  width: 300px;
+  height: 10px;
+
+  top: 20px;
+  right: 300px;
+
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider {
+  z-index: 1;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+
+  background: #454545;
+  outline: none;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 16px;
+  border-radius: 2px;
+
+  background: #FF69B4;
+  cursor: pointer;
+}
