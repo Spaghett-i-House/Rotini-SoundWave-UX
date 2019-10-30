@@ -1,0 +1,69 @@
+<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="nav navbar-nav">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+    </ul>
+    <ul class = "nav navbar-nav navbar-right">
+      <li><a href="#"><span class="glyphicon glyphicon-menu-up"></span> Sign Up</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+
+  <div class="collapse show"  [@collapse]="collapse"> -->
+
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+
+
+  <!-- Items on the left -->
+  <ul class="nav navbar-nav flex-fill w-100 flex-nowrap">
+    <li ngbDropdown class="nav-item dropdown">
+        <a ngbDropdownToggle class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Device List
+        </a>
+        <div ngbDropdownMenu class="dropdown-menu dropdown-flush-right" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Device 1</a>
+          <a class="dropdown-item" href="#">Device 2</a>
+          <a class="dropdown-item" href="#">Device 3</a>
+        </div>
+    </li>
+  </ul>
+
+
+  <!-- Items in the middle -->
+
+  <ul class="nav navbar-nav navbar-logo flex-fill justify-content-center">
+    <li class="nav-item">
+      <a class="nav-link" href="#">LOGO</a>
+    </li>
+  </ul>
+
+
+  <!-- Items on the right -->
+
+  <ul class="nav navbar-nav flex-fill w-100 justify-content-end">
+    <li ngbDropdown class="nav-item dropdown">
+        <a ngbDropdownToggle class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Color Picker
+        </a>
+        <div ngbDropdownMenu class="dropdown-menu dropdown-flush-left" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+    </li>
+  </ul>
+</nav>

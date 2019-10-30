@@ -1,0 +1,13 @@
+.dropdown-flush-left {
+  right: 0;
+  left: auto;
+  /* padding-left: 1px;
+  padding-right: 1px; */
+}
+
+.dropdown-flush-right {
+  left: 0;
+  right: auto;
+  /* padding-left: 1px;
+  padding-right: 1px; */
+}
