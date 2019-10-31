@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ColorPickerModule } from './color-picker/color-picker.module';
+import { ColorPickerComponent } from './color-picker/color-picker.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,7 @@ import { ColorPickerModule } from './color-picker/color-picker.module';
     ColorPickerModule,
     NgbModule
   ],
-  providers: [],
+  providers: [ColorPickerComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -6,6 +6,7 @@ import {
   animate,
   transition
 } from '@angular/animations';
+import { ColorPickerComponent } from '../color-picker/color-picker.component';
 
 @Component({
   selector: 'app-navbar',
@@ -31,7 +32,7 @@ import {
 
 export class NavbarComponent implements OnInit {
 
-  constructor() { }
+  constructor(private cpc: ColorPickerComponent) { }
 
   ngOnInit() { }
 

@@ -25,7 +25,7 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
 
 
   //reference to the HTML canvas element - allows us to use canvas with Angular
-  @ViewChild('canvas', {static: false})
+  @ViewChild('canvas', {static: true})
   canvas: ElementRef<HTMLCanvasElement>
 
   //store context object as a private variable
