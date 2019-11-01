@@ -1,6 +1,3 @@
-/*export class Event {
-}*/
-
 // Actions you can take on the App
 export enum Action {
     JOINED,
@@ -14,4 +11,11 @@ export enum Event {
     DISCONNECT = 'disconnect',
     CONNECT_ERROR = 'connect_error',
     RECONNECT_ERROR = 'reconnect_error'
+}
+
+export enum AudioType {
+    INT8,
+    INT16,
+    INT32,
+    FLOAT32
 }
