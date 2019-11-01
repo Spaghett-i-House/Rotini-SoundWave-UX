@@ -7,11 +7,13 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ColorPickerModule } from './color-picker/color-picker.module';
 import { ColorPickerComponent } from './color-picker/color-picker.component';
+import { VisualizerComponent } from './visualizer/visualizer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent
+    NavbarComponent,
+    VisualizerComponent
   ],
   imports: [
     BrowserModule,
