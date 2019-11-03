@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
-import { Event, Action } from '../model/event';
+import { Event, Action } from '../model/types';
 import * as socketIo from 'socket.io-client';
 
 

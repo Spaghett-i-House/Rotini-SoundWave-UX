@@ -1,4 +1,5 @@
 import {AudioType} from '../model/types';
+declare var MediaRecorder: any;
 
 export class Browseraudio {
     /**
@@ -6,23 +7,41 @@ export class Browseraudio {
      */
 
     private audioContext: AudioContext;
-    private bufferSource: AudioBufferSourceNode;
+    private streamDestination: AudioDestinationNode;
     public analyser: AnalyserNode;
+    public mediaRecorder: any;
+    public audioFreqDomain: Uint8Array;
 
     constructor(){
         this.audioContext = new AudioContext();
-        this.bufferSource = this.audioContext.createBufferSource();
         this.analyser = this.audioContext.createAnalyser();
-        this.bufferSource.connect(this.analyser);
-        this.bufferSource.start();
+        this.analyser.connect(this.audioContext.destination);
+        this.audioFreqDomain = new Uint8Array(this.analyser.fftSize);
+        setTimeout(() => {
+            this.analyser.getByteFrequencyData(this.audioFreqDomain);
+        }, 1000)
+        //this.streamDestination = new AudioDestinationNode();
+        //this.streamDestination.connect(this.audioContext.destination);
     }
 
     public setAudioBytes(audioBytesArray: ArrayBuffer, audioDataType: AudioType, channels: number){
         //create audiobuffer
+        console.log("Setting audioBytes");
+        let bufferSource = this.audioContext.createBufferSource();
         let audioBuffer = this.createAudioBuffer(audioBytesArray, audioDataType);
-        this.bufferSource.buffer = audioBuffer;
-        //copy audiodata into audiobuffer
-        throw(Error("setAudioBytes not implemented"));
+        bufferSource.buffer = audioBuffer;
+        bufferSource.connect(this.analyser);
+        bufferSource.start(bufferSource.buffer.duration);
+    }
+
+    public getAudioTimeDomain(): Uint8Array{
+        let timeDomainData = new Uint8Array(this.analyser.fftSize);
+        this.analyser.getByteTimeDomainData(timeDomainData)
+        return timeDomainData;
+    }  
+
+    public getAudioFrequencyData(): Uint8Array{
+        return this.audioFreqDomain;
     }
 
     private createAudioBuffer(audioBytesArray: ArrayBuffer, dataType: AudioType): AudioBuffer{
@@ -40,6 +59,20 @@ export class Browseraudio {
         let audioBuffer = this.audioContext.createBuffer(1, f32arr.length, 44100);
         audioBuffer.copyToChannel(f32arr, 0, 0);
         return audioBuffer;
+    }
+
+    private createF32Buffer(audioBytesArray: ArrayBuffer, dataType: AudioType){
+        let f32arr: Float32Array;
+        if(dataType == AudioType.INT16){
+            f32arr = this.convertShortArrayToFloat32(new Int16Array(audioBytesArray));
+        }
+        else if(dataType == AudioType.INT8){
+            f32arr = this.convertBytesArrayToFloat32(new Int8Array(audioBytesArray));
+        }
+        else if(dataType == AudioType.INT32){
+            f32arr = this.convertInt32ArrayToFloat32(new Int32Array(audioBytesArray));
+        }
+        return f32arr;
     }
 
     private convertBytesArrayToFloat32(byteArray: Int8Array): Float32Array{

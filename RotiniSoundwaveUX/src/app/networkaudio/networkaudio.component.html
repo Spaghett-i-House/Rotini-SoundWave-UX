@@ -25,6 +25,5 @@
     <button #startStream (click)="startAudioStream(devicedrop.value)">START AUDIO</button>
     <button #stopStream (click)="stopAudioStream()">STOP AUDIO</button>
 </div>
-<div>
-    <app-visualizercanvas></app-visualizercanvas>
-</div>
+
+<canvas #canvas width="600" height="300"></canvas>

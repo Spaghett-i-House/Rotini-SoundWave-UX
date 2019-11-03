@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { SocketService } from './shared/services/socket.service';
-import { Event, Action } from './shared/model/types';
+import { Event, Action, AudioType} from './shared/model/types';
+import { Browseraudio } from './shared/classes/browseraudio';
 
 @Component({
   selector: 'app-networkaudio',
@@ -12,12 +13,16 @@ export class NetworkaudioComponent implements OnInit {
    * NetworkAudioComponent: The page of the demo with controls to control audio and websocket
    * which carries audio
    */
+  @ViewChild('canvas', { static: true }) 
+  canvas: ElementRef<HTMLCanvasElement>;
+
 
   private audioSource: SocketService; //an instance of the socket that carries audio (socketIO)
   private availableDevices: string[]; //cache of names of audio devices
-  private context: AudioContext; //cache of audiocontext, so a new one does not need to be constantly made
-  private analyser: AnalyserNode;
   audioSourceConnected: boolean = false; // a flag to tell if a source is connected for page control
+  private browserAudio: Browseraudio;
+  private ctx: CanvasRenderingContext2D;
+
   constructor() { }
 
   ngOnInit() {
@@ -26,7 +31,19 @@ export class NetworkaudioComponent implements OnInit {
      */
     this.audioSource = null;
     this.availableDevices = [];
-    this.context = new AudioContext();
+    this.browserAudio = new Browseraudio();
+    this.ctx = this.canvas.nativeElement.getContext('2d');
+    setInterval(() => this.draw(), 1000/60);
+  }
+
+  private draw(){
+    console.log("Draw")
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    let barvalues = this.browserAudio.getAudioFrequencyData();
+    this.ctx.fillStyle = 'green';
+    for(let i=0;i<barvalues.length/5; i+=5){
+      this.ctx.fillRect(i, 0, 1, barvalues[i]+100);
+    }
   }
 
   private connectToAudioSource(sourceurl: string): void{
@@ -61,29 +78,13 @@ export class NetworkaudioComponent implements OnInit {
      * @requires audioBytes audioBytes must represent an array of shorts
      * @return none
      */
-
-    //audio is send as an Arraybuffer representing shorts we need to convert this to float32's
-    const audio = new Int16Array(audioBytes); //convert to shorts
-    const audioAsFloat = this.convertShortArrayToFloat(audio);
-    // create an audioBuffer, and copy audio data into it
-    let audioBuffer = this.context.createBuffer(1, audio.length, 44100);
-    audioBuffer.copyToChannel(audioAsFloat, 0, 0);
-
-    //do something with the audio buffer, in this case we are playing it over speaker (good for testing)
-    let source = this.context.createBufferSource();
-    let analyser = this.context.createAnalyser();
-    source.buffer = audioBuffer;
-    source.connect(this.context.destination);
-    source.connect(analyser);
-    source.start();
+    this.browserAudio.setAudioBytes(audioBytes, AudioType.INT16, 1);
+    //console.log(this.browserAudio.getAudioFrequencyData());
   }
 
-  private getFrequencyData(audioBuffer: AudioBufferSourceNode){
-    let analyser = this.context.createAnalyser();
-    let scp = this.context.createScriptProcessor(256, 0, 1);
-    audioBuffer.connect(analyser);
-    scp.connect(this.context.destination);
-
+  private getFrequencyData(){
+    console.log(this.browserAudio.analyser.fftSize, this.browserAudio.analyser.frequencyBinCount,
+      this.browserAudio.analyser.maxDecibels);
   }
 
   private populateDeviceList(deviceNames: string[]){
