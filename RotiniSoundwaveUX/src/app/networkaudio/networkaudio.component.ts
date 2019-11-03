@@ -37,12 +37,13 @@ export class NetworkaudioComponent implements OnInit {
   }
 
   private draw(){
-    console.log("Draw")
+    //console.log("Draw")
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     let barvalues = this.browserAudio.getAudioFrequencyData();
+    //console.log(barvalues);
     this.ctx.fillStyle = 'green';
-    for(let i=0;i<barvalues.length/5; i+=5){
-      this.ctx.fillRect(i, 0, 1, barvalues[i]+100);
+    for(let i=0;i<barvalues.length/100; i+=1){
+      this.ctx.fillRect(i, 0, 1, barvalues[i*100]*10);
     }
   }
 
@@ -78,8 +79,8 @@ export class NetworkaudioComponent implements OnInit {
      * @requires audioBytes audioBytes must represent an array of shorts
      * @return none
      */
-    console.log(audioBytes);
-    //this.browserAudio.setAudioBytes(audioBytes, AudioType.INT16, 1);
+    //console.log(audioBytes);
+    this.browserAudio.setAudioBytes(audioBytes);
     //console.log(this.browserAudio.getAudioFrequencyData());
   }
 

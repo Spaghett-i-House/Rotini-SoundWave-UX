@@ -1,4 +1,4 @@
-import {AudioType} from '../model/types';
+import {AudioType, FFTBlock, FFTSpectrum} from '../model/types';
 declare var MediaRecorder: any;
 
 export class Browseraudio {
@@ -12,39 +12,54 @@ export class Browseraudio {
     public mediaRecorder: any;
     public audioFreqDomain: Uint8Array;
 
+    private rawFFTObject: FFTSpectrum;
+    private frequencyMap: Map<number, number>;
+    private magnitudes: number[];
+
     constructor(){
-        this.audioContext = new AudioContext();
+        this.frequencyMap = new Map<number, number>();
+        this.magnitudes = [];
+        /*this.audioContext = new AudioContext();
         this.analyser = this.audioContext.createAnalyser();
         this.analyser.connect(this.audioContext.destination);
         this.audioFreqDomain = new Uint8Array(this.analyser.fftSize);
         setTimeout(() => {
             this.analyser.getByteFrequencyData(this.audioFreqDomain);
-        }, 1000)
+        }, 1000)*/
         //this.streamDestination = new AudioDestinationNode();
         //this.streamDestination.connect(this.audioContext.destination);
     }
 
-    public setAudioBytes(audioBytesArray: ArrayBuffer, audioDataType: AudioType, channels: number){
+    public setAudioBytes(audioBytesArray: FFTSpectrum){
         //create audiobuffer
-        console.log("Setting audioBytes");
+        /**
+         * setAudioBytes: Sets the current frame of audio data
+         */
+        this.rawFFTObject = audioBytesArray;
+        this.magnitudes = [];
+        this.rawFFTObject.forEach(element => {
+            this.frequencyMap[element.frequency] = this.magnitudes;
+            this.magnitudes.push(element.magnitude);
+        });
+        /*console.log("Setting audioBytes");
         let bufferSource = this.audioContext.createBufferSource();
         let audioBuffer = this.createAudioBuffer(audioBytesArray, audioDataType);
         bufferSource.buffer = audioBuffer;
         bufferSource.connect(this.analyser);
-        bufferSource.start(bufferSource.buffer.duration);
+        bufferSource.start(bufferSource.buffer.duration);*/
     }
 
-    public getAudioTimeDomain(): Uint8Array{
+    /*public getAudioTimeDomain(): Uint8Array{
         let timeDomainData = new Uint8Array(this.analyser.fftSize);
         this.analyser.getByteTimeDomainData(timeDomainData)
         return timeDomainData;
-    }  
+    }  */
 
-    public getAudioFrequencyData(): Uint8Array{
-        return this.audioFreqDomain;
+    public getAudioFrequencyData(): number[]{
+        return this.magnitudes;
     }
 
-    private createAudioBuffer(audioBytesArray: ArrayBuffer, dataType: AudioType): AudioBuffer{
+    /*private createAudioBuffer(audioBytesArray: ArrayBuffer, dataType: AudioType): AudioBuffer{
         let f32arr: Float32Array;
         if(dataType == AudioType.INT16){
             f32arr = this.convertShortArrayToFloat32(new Int16Array(audioBytesArray));
@@ -81,7 +96,7 @@ export class Browseraudio {
             audioAsFloat[i] = byteArray[i]/127; //convert int16 to 1, maxvalue of int16 is 32767
         }
         return audioAsFloat;
-    }
+    }*/
 
     private convertShortArrayToFloat32(shortArray: Int16Array): Float32Array{
         /**
