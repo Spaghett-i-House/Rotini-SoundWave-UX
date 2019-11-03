@@ -19,17 +19,22 @@ export class NetworkaudioComponent implements OnInit {
 
   private audioSource: SocketService; //an instance of the socket that carries audio (socketIO)
   private availableDevices: string[]; //cache of names of audio devices
-  audioSourceConnected: boolean = false; // a flag to tell if a source is connected for page control
+  private audioSourceConnected: boolean = false; // a flag to tell if a source is connected for page control
   private browserAudio: Browseraudio;
   private ctx: CanvasRenderingContext2D;
 
-  constructor() { }
+  constructor(private audioService: SocketService) {
+    //this.connectToAudioSource = this.connectToAudioSource.bind(this);
+    console.log(this.audioService);
+    //this.audioService = audioService;
+    console.log("Constructed");
+  }
 
   ngOnInit() {
     /**
      * ngOnInit: Runs when page initializes, set variable to start state
      */
-    this.audioSource = null;
+    //this.audioService = null;
     this.availableDevices = [];
     this.browserAudio = new Browseraudio();
     this.ctx = this.canvas.nativeElement.getContext('2d');
@@ -47,7 +52,7 @@ export class NetworkaudioComponent implements OnInit {
     }
   }
 
-  private connectToAudioSource(sourceurl: string): void{
+  private connectToAudioSource(sourceurl: string){
     /**
      * connectToAudioSource: Reaches out and creates a connection to websocket server
      */
@@ -55,22 +60,21 @@ export class NetworkaudioComponent implements OnInit {
     console.log("[STATUS] Attempting connection to", "http://"+sourceurl);
     
     // close previous audio source to prevent conflicts
-    if(this.audioSource){
-      this.audioSource.close();
+    if(this.audioService){
+      this.audioService.close();
     }
+    console.log(this.audioService);
     // create new websocket connection
-    this.audioSource = new SocketService("http://"+sourceurl);
+    this.audioService.connectSocket(sourceurl); //= new SocketService("http://"+sourceurl);
     this.audioSourceConnected = true;
     //handle socket events
-    this.audioSource.onEvent(Event.DISCONNECT).subscribe(() => this.closeAudioSource());
-    this.audioSource.onEvent(Event.CONNECT).subscribe(() => this.handleConnection());
+    this.audioService.onEvent(Event.DISCONNECT).subscribe(() => this.closeAudioSource());
+    this.audioService.onEvent(Event.CONNECT).subscribe(() => this.handleConnection());
     //handle potential data streams
-    this.audioSource.getAudiodataStream()
+    this.audioService.getAudiodataStream()
       .subscribe((audioBytes: FFTSpectrum) => this.handleAudioBytes(audioBytes));
-    this.audioSource.getDeviceListInterval()
+    this.audioService.getDeviceListInterval()
       .subscribe((devices: string[]) => this.populateDeviceList(devices));
-
-
   }
 
   private handleAudioBytes(audioBytes: FFTSpectrum){
@@ -105,7 +109,7 @@ export class NetworkaudioComponent implements OnInit {
      * @param deviceName: the name of an audio input device on a host computer
      * @return none
      */
-    this.audioSource.startStream(deviceName);
+    this.audioService.startStream(deviceName);
     console.log("[STATUS] audio stream with device", deviceName, "started");
   }
 
@@ -113,7 +117,7 @@ export class NetworkaudioComponent implements OnInit {
     /**
      * self explanatory title opposite of startaudiostream, fired on event
      */
-    this.audioSource.stopStream();
+    this.audioService.stopStream();
   }
 
   private handleConnection(){
@@ -126,12 +130,12 @@ export class NetworkaudioComponent implements OnInit {
   private closeAudioSource(){
     /**
      * closeAudioSource: closes the websocket connection to the sound node, sets all associated variables
-     * @augments this.audioSource -> null
-     * @augments this.audioSourceConnected -> false
+     * @augments this.audioService -> null
+     * @augments this.audioServiceConnected -> false
      */
     console.log("[STATUS] Audio source closed");
-    this.audioSource.close();
-    this.audioSource = null;
+    this.audioService.close();
+    this.audioService = null;
     this.audioSourceConnected = false;
     //this.availableDevices = [];
   }

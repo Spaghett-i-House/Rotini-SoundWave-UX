@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SettingsService } from './settings.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,15 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'RotiniSoundwaveUX';
+  private navOpen: Boolean;
+
+  constructor(private settings: SettingsService){}
+
+  ngOnInit(){
+    this.navOpen = false;
+  }
+
+  settings_hide(){
+    this.navOpen = !this.navOpen;
+  }
 }

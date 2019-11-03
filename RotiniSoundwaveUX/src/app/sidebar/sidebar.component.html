@@ -1,0 +1,10 @@
+<div class="sidenav">
+    <div class="slidecontainer" id="resSlider" *ngIf="showResolution">
+        <input type="range" min="0.0" max="1.0" value=".75" step=".01" class="slider" id="resRange" [(ngModel)]="resolution" (input)="oi_resolution()">
+    </div>
+    <a (click)="oc_resolution()">Resolution</a>
+    <a>Opacity</a>
+    <a>Customization</a>
+    <a>Spaghetti</a>
+    <a>$500,000</a>
+</div>

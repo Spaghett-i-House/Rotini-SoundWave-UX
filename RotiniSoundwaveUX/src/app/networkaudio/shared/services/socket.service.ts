@@ -18,16 +18,22 @@ export class SocketService {
    */
 
   private socket: socketIo; //the websocket connection
-
-  constructor(nodeAddress: string) {
+  constructor(){
+    this.connectSocket = this.connectSocket.bind(this);
+  }
+  //constructor(nodeAddress: string) {
     /**
      * @param nodeAddress: the address where the rotini-sourndnode websocket should be located
      */
     // connect socket
+    //this.socket = socketIo(nodeAddress);
+  //}
+
+  connectSocket(nodeAddress: String){
     this.socket = socketIo(nodeAddress);
   }
 
-  public getAudiodataStream(): Observable<FFTSpectrum>{
+  getAudiodataStream(): Observable<FFTSpectrum>{
     /**
      * getAudiodataStream: request a stream for audio bytes received from server
      * @returns an observable to subscribe to
@@ -38,7 +44,7 @@ export class SocketService {
     });
   }
 
-  public getDeviceListInterval(): Observable<string[]>{
+  getDeviceListInterval(): Observable<string[]>{
     /**
      * getDeviceListInterval: requests a stream for receiving the periodic transmission of available
      * audio devices from a connected rotini-soundnode
@@ -52,7 +58,7 @@ export class SocketService {
     });
   }
 
-  public onEvent(event: Event): Observable<any>{
+  onEvent(event: Event): Observable<any>{
     /**
      * onEvent: gets a stream of events like connection and disconnection
      * @return an observable to any events that arise in the socket
@@ -62,7 +68,7 @@ export class SocketService {
     })
   }
 
-  public stopStream(){
+  stopStream(){
     /**
      * stopStream: emits a stop_stream event to signal a rotini-soundnode to stop sending audio data
      */
@@ -71,7 +77,7 @@ export class SocketService {
 
   }
 
-  public startStream(deviceName: string){
+  startStream(deviceName: string){
     /**
      * startStream: emits a start_stream event signaling a connected rotini-soundnode to start sending audio data
      * @param deviceName: a string representing a device (should have been received by getDeviceListInterval)
@@ -79,11 +85,13 @@ export class SocketService {
     this.socket.emit('start_stream', deviceName);
   }
 
-  public close(){
+  close(){
     /**
      * close: shuts down socket
      * @augments this.socket -> closed socket
      */
-    this.socket.close();
+    if(this.socket){
+      this.socket.close();
+    }
   }
 }

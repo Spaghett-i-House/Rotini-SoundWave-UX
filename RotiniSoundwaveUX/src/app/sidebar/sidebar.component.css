@@ -2,16 +2,12 @@ a:hover {
 	cursor: pointer;
 }
 
-body{
-    background-color: black;
-}
 #glCanvas {
 	width: 100%;
 	height: 100%;
 	position: absolute;
 	left: 0;
-    top: 0;
-    background-color: black;
+	top: 0;
 }
 
 .sidenav {
@@ -60,8 +56,6 @@ body{
 }
 
 .slidecontainer {
-  display: none;
-  opacity: 0;
   position: relative;
 
   z-index: 1;

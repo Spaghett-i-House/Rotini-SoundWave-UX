@@ -1,4 +1,5 @@
 import {AudioType, FFTBlock, FFTSpectrum} from '../model/types';
+import { element } from 'protractor';
 declare var MediaRecorder: any;
 
 export class Browseraudio {
@@ -37,10 +38,10 @@ export class Browseraudio {
          */
         this.rawFFTObject = audioBytesArray;
         this.magnitudes = [];
-        this.rawFFTObject.forEach(element => {
-            this.frequencyMap[element.frequency] = this.magnitudes;
-            this.magnitudes.push(element.magnitude);
-        });
+        for(let i = 0; i<audioBytesArray.length; i++){
+            this.frequencyMap[audioBytesArray[i].frequency] = audioBytesArray[i].magnitude;
+            this.magnitudes.push(audioBytesArray[i].magnitude); 
+        }
         /*console.log("Setting audioBytes");
         let bufferSource = this.audioContext.createBufferSource();
         let audioBuffer = this.createAudioBuffer(audioBytesArray, audioDataType);
