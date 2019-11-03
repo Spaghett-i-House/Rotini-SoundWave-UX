@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { SocketService } from './shared/services/socket.service';
-import { Event, Action, AudioType} from './shared/model/types';
+import { Event, Action, AudioType, FFTSpectrum} from './shared/model/types';
 import { Browseraudio } from './shared/classes/browseraudio';
 
 @Component({
@@ -65,20 +65,21 @@ export class NetworkaudioComponent implements OnInit {
     this.audioSource.onEvent(Event.CONNECT).subscribe(() => this.handleConnection());
     //handle potential data streams
     this.audioSource.getAudiodataStream()
-      .subscribe((audioBytes: ArrayBuffer) => this.handleAudioBytes(audioBytes));
+      .subscribe((audioBytes: FFTSpectrum) => this.handleAudioBytes(audioBytes));
     this.audioSource.getDeviceListInterval()
       .subscribe((devices: string[]) => this.populateDeviceList(devices));
 
 
   }
 
-  private handleAudioBytes(audioBytes: ArrayBuffer){
+  private handleAudioBytes(audioBytes: FFTSpectrum){
     /**
      * HandleAudioBytes: do something with a received audio signal
      * @requires audioBytes audioBytes must represent an array of shorts
      * @return none
      */
-    this.browserAudio.setAudioBytes(audioBytes, AudioType.INT16, 1);
+    console.log(audioBytes);
+    //this.browserAudio.setAudioBytes(audioBytes, AudioType.INT16, 1);
     //console.log(this.browserAudio.getAudioFrequencyData());
   }
 

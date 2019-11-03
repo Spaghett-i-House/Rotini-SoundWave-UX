@@ -5,7 +5,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
-import { Event, Action } from '../model/types';
+import { Event, Action , FFTBlock, FFTSpectrum} from '../model/types';
 import * as socketIo from 'socket.io-client';
 
 
@@ -27,14 +27,14 @@ export class SocketService {
     this.socket = socketIo(nodeAddress);
   }
 
-  public getAudiodataStream(): Observable<ArrayBuffer>{
+  public getAudiodataStream(): Observable<FFTSpectrum>{
     /**
      * getAudiodataStream: request a stream for audio bytes received from server
      * @returns an observable to subscribe to
      */
-    return new Observable<ArrayBuffer>(observer => {
+    return new Observable<FFTSpectrum>(observer => {
       // audio is tranported as an event with an arraybuffer of audio bytes (short for now)
-      this.socket.on('audio', (audioBytes: ArrayBuffer) => observer.next(audioBytes));
+      this.socket.on('audio', (audioBytes: FFTSpectrum) => observer.next(audioBytes));
     });
   }
 
