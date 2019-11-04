@@ -107,7 +107,7 @@ export class VisualizerComponent implements AfterViewInit {
     // Select the positionBuffer as the one to apply buffer
     // operations to from here out.
     this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, positionBuffer);
-    console.log(fftData.splice(0,40));
+    // console.log(fftData.splice(0,40));
     // Now create an array of positions for the outer verts.
     let shift = 1;
     for(let i=0; i<this.positions.length; i++){
