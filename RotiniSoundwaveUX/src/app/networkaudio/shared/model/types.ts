@@ -20,9 +20,6 @@ export enum AudioType {
     FLOAT32
 }
 
-export type FFTBlock  = {
-    frequency: number,
-    magnitude: number
-}
+export type FFTBlock  = [number, number] //frequency, magnitude
 
 export type FFTSpectrum = FFTBlock[];

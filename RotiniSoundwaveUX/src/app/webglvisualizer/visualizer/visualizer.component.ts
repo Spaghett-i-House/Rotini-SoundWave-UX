@@ -2,8 +2,8 @@ import { Component, OnInit, AfterViewInit, NgZone, ElementRef, ViewChild} from '
 import { SettingsService, AppSettings } from '../../settings.service';
 import { SocketService } from '../../networkaudio/shared/services/socket.service';
 import { FFTSpectrum } from 'src/app/networkaudio/shared/model/types';
-var gl_mat = require('../../../assets/gl-matrix');
-//import { mat4 } from '../../../assets/gl-matrix';
+//var gl_mat = require('../../../assets/gl-matrix');
+import * as gl_mat from '../../../assets/gl-matrix';
 
 const vsSource = `
 attribute vec4 aVertexPosition;
@@ -72,7 +72,8 @@ export class VisualizerComponent implements AfterViewInit {
 
     let render = (now) => {
       now *= 0.001; //to seconds
-      let fftArray = this.audioService.getCurrentFFT();
+      let fftArray = Array.from(this.audioService.getAudioDataFrame().values());
+      //console.log(fftArray);
       this.initialPositionArray(cFidelity);
       let buffer = this.initBuffers(fftArray, cFidelity);
 
@@ -107,7 +108,7 @@ export class VisualizerComponent implements AfterViewInit {
     // Select the positionBuffer as the one to apply buffer
     // operations to from here out.
     this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, positionBuffer);
-    console.log(fftData.splice(0,40));
+    //console.log(fftData.splice(0,40));
     // Now create an array of positions for the outer verts.
     let shift = 1;
     for(let i=0; i<this.positions.length; i++){

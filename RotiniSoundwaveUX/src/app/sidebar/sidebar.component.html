@@ -8,9 +8,9 @@
     <a>Spaghetti</a>
     <a>$500,000</a>
     <input #webaddr [(ngModel)]="websocketAddr"> <button (click)="connectWebsocket(webaddr.value)">Connect</button>
-    <select #device *ngIf="connectedWebsocket" [(ngModel)]="streamDevice">
-        <option *ngFor="let device of devices">{{device}}</option>
+    <select #device *ngIf="audioserv.isConnected" [(ngModel)]="streamDevice">
+        <option *ngFor="let device of audioserv.deviceNames">{{device}}</option>
     </select>
-    <button (click)="startStream(streamDevice)" *ngIf="connectedWebsocket">Start</button>
-    <button (click)="stopStream()" *ngIf="connectedWebsocket">Stop</button>
+    <button (click)="startStream(streamDevice)" *ngIf="audioserv.isConnected">Start</button>
+    <button (click)="stopStream()" *ngIf="audioserv.isConnected">Stop</button>
 </div>
