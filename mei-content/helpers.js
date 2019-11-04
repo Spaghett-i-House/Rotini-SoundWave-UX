@@ -46,7 +46,13 @@ function changeRes(perc) {
 	gl.viewport(0, 0, w, h);
 }
 
-// hex/opac to RGBA from 0 to 1
+// Is valid hex input
+function validHex(hex) {
+	var hexRe = /[0-9A-Fa-f]{6}/g;
+	return (hex.length == 6 || (hex.length == 7 && hex[0] == '#')) && hexRe.test(hex)
+}
+
+// Hex/opac to RGBA from 0 to 1
 function rgbaNorm(hex, opac) {
 	if (hex[0] == '#')
 		hex = hex.slice(1);

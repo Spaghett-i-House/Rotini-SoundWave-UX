@@ -23,6 +23,26 @@ void main() {
 	gl_FragColor = vColor;
 }`;
 
+// number of verts
+const cFidelity = 40;
+
+// Now create an array of positions for the outer verts.
+var positions = [
+	0.0, 0.0 // vertex always
+];
+
+var presetCols = {
+"candy": {
+	col1: rgbaNorm("#ffd1dc"),
+	col2: rgbaNorm("#ffd9e2")
+},
+"halloween": {
+	col1: rgbaNorm("#ff7a1c"),
+	col2: rgbaNorm("#2b2b2b")
+}
+}
+var preset = Object.values(presetCols)[0];
+
 function main() {
 	// Initialize the GL context
 	canvas = document.querySelector("#glCanvas");
@@ -51,10 +71,11 @@ function main() {
 
 	// Here's where we call the routine that builds all the
 	// objects we'll be drawing.
-	const buffers = initBuffers(gl);
+	initPos(cFidelity);
 
 	// Draw the scene repeatedly
 	function render(now) {
+		buffers = initBuffers(gl);
 		now *= 0.001;  // convert to seconds
 		drawScene(gl, programInfo, buffers, now);
 
@@ -63,10 +84,21 @@ function main() {
 	requestAnimationFrame(render);
 }
 
-function initBuffers(gl) {
-	// number of verts
-	const cFidelity = 100;
+// Initiates the position array 
+function initPos() {
+	for (i = 0; i <= cFidelity * 2; i++) {
+		if( i % 2 == 0) {
+			positions.push(Math.cos(i * Math.PI/cFidelity)); // x coord
+			positions.push(Math.sin(i * Math.PI/cFidelity)); // y coord
+		}
+		else {
+			positions.push(Math.cos((i-1) * Math.PI/cFidelity)); // x coord
+			positions.push(Math.sin((i-1) * Math.PI/cFidelity)); // y coord			
+		}
+	}
+}
 
+function initBuffers(gl) {
 	// Create a buffer for the positions.
 	const positionBuffer = gl.createBuffer();
 
@@ -74,14 +106,15 @@ function initBuffers(gl) {
 	// operations to from here out.
 	gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-	// Now create an array of positions for the outer verts.
-	const positions = [
-		0.0, 0.0 // vertex always
-	];
-
-	for (i = 0; i <= cFidelity; i++){
-	  positions.push(Math.cos(i * 2 * Math.PI/cFidelity)); // x coord
-	  positions.push(Math.sin(i * 2 * Math.PI/cFidelity)); // y coord
+	var shift = (1 + Math.random());
+	for (i = 0; i < positions.length; i++) {
+		if (i % 4 == 0) {
+			if (Math.random() < .5)
+				shift = (1 + .01 * Math.random());
+			else
+				shift = (1 - .01 * Math.random());
+		}
+		positions[i] *= shift;
 	}
 
 	vertexCount = positions.length/2;
@@ -89,14 +122,15 @@ function initBuffers(gl) {
 	// F32 array -> WebGL to build shape
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
-	col = rgbaNorm("#ffd1dc");
-
 	// Array of colors to do
 	const colors = [
-		col.r, col.g, col.b, col.a // START WITH ONE
+		preset.col1.r, preset.col1.g, preset.col1.b, preset.col1.a // START WITH ONE
 	];
-	for (i = 0; i <= cFidelity; i++) {
-		colors.push(col.r, col.g, col.b, col.a);
+	for (i = 0; i <= cFidelity*4; i++) {
+		if ( i % 4 == 1 || i % 4 == 2)
+			colors.push(preset.col1.r, preset.col1.g, preset.col1.b, preset.col1.a);
+		else
+			colors.push(preset.col2.r, preset.col2.g, preset.col2.b, preset.col2.a);			
 	}
 
 	const colorBuffer = gl.createBuffer();
@@ -209,7 +243,7 @@ function drawScene(gl, programInfo, buffers, now) {
 	const speedF = 10;
 
 	// console.log(Math.pow(Math.sin(speedF * now), 3));
-	cScale += scaleF * Math.pow(Math.sin(speedF * now), 3);
+	// cScale += scaleF * Math.pow(Math.sin(speedF * now), 3);
 }
 
 window.onload = main;
