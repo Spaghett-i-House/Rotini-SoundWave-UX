@@ -1,5 +1,7 @@
 import { Component, OnInit, AfterViewInit, NgZone, ElementRef, ViewChild} from '@angular/core';
 import { SettingsService, AppSettings } from '../../settings.service';
+import { SocketService } from '../../networkaudio/shared/services/socket.service';
+import { FFTSpectrum } from 'src/app/networkaudio/shared/model/types';
 var gl_mat = require('../../../assets/gl-matrix');
 //import { mat4 } from '../../../assets/gl-matrix';
 
@@ -36,12 +38,17 @@ export class VisualizerComponent implements AfterViewInit {
   private shaderProgram: any;
   private programInfo: any;
   private buffers: any;
+  private positions: number[];
   private vertexCount = 0;
   private cScale = 1;
+  private soundQueue: FFTSpectrum[];
 
-  constructor(private settings: SettingsService) { }
+  constructor(private settings: SettingsService, private audioService: SocketService) {
+    this.soundQueue = [];
+  }
 
   ngAfterViewInit() {
+
     this.ctx = this.canvas.nativeElement.getContext('webgl');
     this.changeRes(.75);
     this.settings.addSettingsChangeListener((settings: AppSettings) => {
@@ -60,44 +67,68 @@ export class VisualizerComponent implements AfterViewInit {
         modelViewMatrix: this.ctx.getUniformLocation(this.shaderProgram, 'uModelViewMatrix'),
         },
     };
-    this.buffers = this.initBuffers();
+    const cFidelity = 40;
+    this.positions = [0.0, 0.0];
 
     let render = (now) => {
       now *= 0.001; //to seconds
-      this.drawScene(this.ctx, this.programInfo, this.buffers, now);
+      let fftArray = this.audioService.getCurrentFFT();
+      this.initialPositionArray(cFidelity);
+      let buffer = this.initBuffers(fftArray, cFidelity);
+
+      this.drawScene(this.ctx, this.programInfo, buffer, now);
 
       requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
   }
 
-  animate(): void {}
+  private initialPositionArray(cFidelity){
+    /*const positions = [
+      0.0, 0.0 // vertex always
+    ];*/
+    
 
-  private initBuffers(){
-    // number of verts
-    const cFidelity = 100;
+    for (let i = 0; i <= cFidelity * 2; i++) {
+      if( i % 2 == 0) {
+        this.positions.push(Math.cos(i * Math.PI/cFidelity)/10); // x coord
+        this.positions.push(Math.sin(i * Math.PI/cFidelity)/10); // y coord
+      }
+      else {
+        this.positions.push(Math.cos((i-1) * Math.PI/cFidelity)/10); // x coord
+        this.positions.push(Math.sin((i-1) * Math.PI/cFidelity)/10); // y coord			
+      }
+    }
+  }
 
+  private initBuffers(fftData, cFidelity){
     // Create a buffer for the positions.
     const positionBuffer = this.ctx.createBuffer();
-
     // Select the positionBuffer as the one to apply buffer
     // operations to from here out.
     this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, positionBuffer);
-
+    console.log(fftData.splice(0,40));
     // Now create an array of positions for the outer verts.
-    const positions = [
-      0.0, 0.0 // vertex always
-    ];
-
-    for (let i = 0; i <= cFidelity; i++){
-      positions.push(Math.cos(i * 2 * Math.PI/cFidelity)/10); // x coord
-      positions.push(Math.sin(i * 2 * Math.PI/cFidelity)/10); // y coord
+    let shift = 1;
+    for(let i=0; i<this.positions.length; i++){
+      if(i%4 == 0){
+        if(i+1<fftData.length){
+          shift=1 + ((fftData[i+1] - 4) / 10);
+        }
+      }
+      this.positions[i]*=shift
+      /*if(i >= fftData.length){
+        this.positions[i] *= 1;
+      }
+      else{
+        this.positions[i] *= fftData[i];
+      }*/
     }
-
-    this.vertexCount = positions.length/2;
+    //console.log(positions);
+    this.vertexCount = this.positions.length/2;
 
     // F32 array -> WebGL to build shape
-    this.ctx.bufferData(this.ctx.ARRAY_BUFFER, new Float32Array(positions), this.ctx.STATIC_DRAW);
+    this.ctx.bufferData(this.ctx.ARRAY_BUFFER, new Float32Array(this.positions), this.ctx.STATIC_DRAW);
 
     let col = this.rgbaNorm("#ffd1dc");
 
@@ -105,7 +136,7 @@ export class VisualizerComponent implements AfterViewInit {
     const colors = [
       col.r, col.g, col.b, col.a // START WITH ONE
     ];
-    for (let i = 0; i <= cFidelity; i++) {
+    for (let i = 0; i <= this.positions.length; i++) {
       colors.push(col.r, col.g, col.b, col.a);
     }
 
@@ -214,12 +245,12 @@ export class VisualizerComponent implements AfterViewInit {
       gl.drawArrays(gl.TRIANGLE_FAN, offset, this.vertexCount);
     }
 
-    // Pulse big and small
+    /*// Pulse big and small
     const scaleF = 0.02;
     const speedF = 10;
 
     // console.log(Math.pow(Math.sin(speedF * now), 3));
-    this.cScale += scaleF * Math.pow(Math.sin(speedF * now), 3);
+    this.cScale += scaleF * Math.pow(Math.sin(speedF * now), 3);*/
   }
 
   private initShaderProgram(){

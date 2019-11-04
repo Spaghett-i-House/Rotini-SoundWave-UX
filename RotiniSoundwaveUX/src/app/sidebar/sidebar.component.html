@@ -7,4 +7,10 @@
     <a>Customization</a>
     <a>Spaghetti</a>
     <a>$500,000</a>
+    <input #webaddr [(ngModel)]="websocketAddr"> <button (click)="connectWebsocket(webaddr.value)">Connect</button>
+    <select #device *ngIf="connectedWebsocket" [(ngModel)]="streamDevice">
+        <option *ngFor="let device of devices">{{device}}</option>
+    </select>
+    <button (click)="startStream(streamDevice)" *ngIf="connectedWebsocket">Start</button>
+    <button (click)="stopStream()" *ngIf="connectedWebsocket">Stop</button>
 </div>

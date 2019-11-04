@@ -7,6 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import { Event, Action , FFTBlock, FFTSpectrum} from '../model/types';
 import * as socketIo from 'socket.io-client';
+import { Browseraudio } from '../classes/browseraudio';
 
 
 @Injectable({
@@ -18,8 +19,11 @@ export class SocketService {
    */
 
   private socket: socketIo; //the websocket connection
+  private audioQueue: Browseraudio;
+
   constructor(){
     this.connectSocket = this.connectSocket.bind(this);
+    this.audioQueue = new Browseraudio();
   }
   //constructor(nodeAddress: string) {
     /**
@@ -31,6 +35,19 @@ export class SocketService {
 
   connectSocket(nodeAddress: String){
     this.socket = socketIo(nodeAddress);
+    this.socket.on('audio', (audioBytes: FFTSpectrum) => {
+      //console.log(audioBytes);
+      this.audioQueue.setAudioBytes(audioBytes);
+    });
+  }
+
+  checkSocketConnected(){
+    if(this.socket){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   getAudiodataStream(): Observable<FFTSpectrum>{
@@ -40,7 +57,10 @@ export class SocketService {
      */
     return new Observable<FFTSpectrum>(observer => {
       // audio is tranported as an event with an arraybuffer of audio bytes (short for now)
-      this.socket.on('audio', (audioBytes: FFTSpectrum) => observer.next(audioBytes));
+      this.socket.on('audio', (audioBytes: FFTSpectrum) => {
+        this.audioQueue.setAudioBytes(audioBytes);
+        observer.next(audioBytes);
+      })
     });
   }
 
@@ -83,6 +103,10 @@ export class SocketService {
      * @param deviceName: a string representing a device (should have been received by getDeviceListInterval)
      */
     this.socket.emit('start_stream', deviceName);
+  }
+
+  getCurrentFFT(){
+    return this.audioQueue.getAudioFrequencyData();
   }
 
   close(){

@@ -7,10 +7,11 @@ import { Observable } from 'rxjs/Observable';
 export class SettingsService {
   private appSettings: AppSettings;
   private activeObservables: ((AppSettings) => void)[];
-
+  private activeConnectionL: (() => void)[];
   constructor() { 
     this.appSettings = new AppSettings();
     this.activeObservables = [];
+    this.activeConnectionL = [];
   }
 
   addSettingsChangeListener(callback: (AppSettings) => void){
@@ -28,6 +29,22 @@ export class SettingsService {
         console.log("[DEBUG] Removed settings listener");
       }
     }
+  }
+
+  connectionMade(){
+    for(let i=0;i<this.activeConnectionL.length; i++){
+      const callback = this.activeConnectionL[i];
+      try{
+        callback();
+      } catch (err){
+        this.activeObservables.splice(i);
+        console.log("[DEBUG] Removed settings listener");
+      }
+    }
+  }
+
+  listenForConnection(callback: () => void){
+    this.activeConnectionL.push(callback);
   }
 }
 
