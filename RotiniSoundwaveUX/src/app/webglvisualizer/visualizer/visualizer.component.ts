@@ -72,7 +72,7 @@ export class VisualizerComponent implements AfterViewInit {
         modelViewMatrix: this.ctx.getUniformLocation(this.shaderProgram, 'uModelViewMatrix'),
         },
     };
-    const cFidelity = 40;
+    const cFidelity = 20;
     this.positions = [0.0, 0.0];
 
     let render = (now) => {
@@ -90,9 +90,9 @@ export class VisualizerComponent implements AfterViewInit {
   }
 
   private initialPositionArray(cFidelity){
-    /*const positions = [
+    this.positions = [
       0.0, 0.0 // vertex always
-    ];*/
+    ];
     
 
     for (let i = 0; i <= cFidelity * 2; i++) {
@@ -121,7 +121,7 @@ export class VisualizerComponent implements AfterViewInit {
       if(i%4 == 0){
         if(i+1<fftData.length){
           //console.log(fftData[i]);
-          shift=1+Math.random();//Math.min(fftData[i], 5)/5;
+          shift=1+Math.min(fftData[i], 5)/5;
         }
       }
       this.positions[i]*=shift;
@@ -132,17 +132,17 @@ export class VisualizerComponent implements AfterViewInit {
     // F32 array -> WebGL to build shape
     this.ctx.bufferData(this.ctx.ARRAY_BUFFER, new Float32Array(this.positions), this.ctx.STATIC_DRAW);
 
-    let col = utils.rgbaNorm("#ffd1dc");
+    // let col = utils.rgbaNorm("#ffd1dc");
 
     // Array of colors to do
-    const colors = [
-      col.r, col.g, col.b, col.a // START WITH ONE
-    ];
     let active = this.settings.getSettings().active_pallete;
     let pallets = this.settings.getSettings().palletes;
     let col1 = pallets[active].col1;
     let col2 = pallets[active].col2;
 
+    const colors = [
+      col1.r, col1.g, col1.b, col1.a // START WITH ONE
+    ];
     for (let i = 0; i <= this.positions.length*4; i++) {
       if(i%4 == 1 || i%4 == 2){
         colors.push(col1.r, col1.g, col1.b, col1.a);
