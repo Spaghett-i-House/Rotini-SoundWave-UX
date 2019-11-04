@@ -121,7 +121,7 @@ export class VisualizerComponent implements AfterViewInit {
       if(i%4 == 0){
         if(i+1<fftData.length){
           //console.log(fftData[i]);
-          shift=1+Math.min(fftData[i], 5)/5;
+          shift=1+Math.random();//Math.min(fftData[i], 5)/5;
         }
       }
       this.positions[i]*=shift;
