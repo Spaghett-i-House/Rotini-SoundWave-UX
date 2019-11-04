@@ -2,8 +2,13 @@ import { Component, OnInit, AfterViewInit, NgZone, ElementRef, ViewChild} from '
 import { SettingsService, AppSettings } from '../../settings.service';
 import { SocketService } from '../../networkaudio/shared/services/socket.service';
 import { FFTSpectrum } from 'src/app/networkaudio/shared/model/types';
-var gl_mat = require('../../../assets/gl-matrix');
-//import { mat4 } from '../../../assets/gl-matrix';
+import * as utils from './utils'
+//var gl_mat = require('../../../assets/gl-matrix');
+import * as gl_mat from '../../../assets/gl-matrix';
+
+/**
+ * KNOWN ISSUE: The visualizer slows down with time, we need to find out why
+ */
 
 const vsSource = `
 attribute vec4 aVertexPosition;
@@ -72,7 +77,8 @@ export class VisualizerComponent implements AfterViewInit {
 
     let render = (now) => {
       now *= 0.001; //to seconds
-      let fftArray = this.audioService.getCurrentFFT();
+      let fftArray = Array.from(this.audioService.getAudioDataFrame().values());
+      //console.log(fftArray);
       this.initialPositionArray(cFidelity);
       let buffer = this.initBuffers(fftArray, cFidelity);
 
@@ -107,37 +113,43 @@ export class VisualizerComponent implements AfterViewInit {
     // Select the positionBuffer as the one to apply buffer
     // operations to from here out.
     this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, positionBuffer);
-    // console.log(fftData.splice(0,40));
+    //console.log(fftData);
     // Now create an array of positions for the outer verts.
     let shift = 1;
+    //let multiplier = fftData.length/this.positions.length;
     for(let i=0; i<this.positions.length; i++){
       if(i%4 == 0){
         if(i+1<fftData.length){
-          shift=1 + ((fftData[i+1] - 4) / 10);
+          //console.log(fftData[i]);
+          shift=1+Math.min(fftData[i], 5)/5;
         }
       }
-      this.positions[i]*=shift
-      /*if(i >= fftData.length){
-        this.positions[i] *= 1;
-      }
-      else{
-        this.positions[i] *= fftData[i];
-      }*/
+      this.positions[i]*=shift;
     }
-    //console.log(positions);
+
     this.vertexCount = this.positions.length/2;
 
     // F32 array -> WebGL to build shape
     this.ctx.bufferData(this.ctx.ARRAY_BUFFER, new Float32Array(this.positions), this.ctx.STATIC_DRAW);
 
-    let col = this.rgbaNorm("#ffd1dc");
+    let col = utils.rgbaNorm("#ffd1dc");
 
     // Array of colors to do
     const colors = [
       col.r, col.g, col.b, col.a // START WITH ONE
     ];
-    for (let i = 0; i <= this.positions.length; i++) {
-      colors.push(col.r, col.g, col.b, col.a);
+    let active = this.settings.getSettings().active_pallete;
+    let pallets = this.settings.getSettings().palletes;
+    let col1 = pallets[active].col1;
+    let col2 = pallets[active].col2;
+
+    for (let i = 0; i <= this.positions.length*4; i++) {
+      if(i%4 == 1 || i%4 == 2){
+        colors.push(col1.r, col1.g, col1.b, col1.a);
+      }
+      else{
+        colors.push(col2.r, col2.g, col2.b, col2.a);
+      }
     }
 
     const colorBuffer = this.ctx.createBuffer();
@@ -161,7 +173,7 @@ export class VisualizerComponent implements AfterViewInit {
 
     // Create a perspective matrix
     // FOV: 45d, W/H: canvas, sight: 0.1 - 100 from camera
-    const fieldOfView = this.radian(45);   // in radians
+    const fieldOfView = utils.radian(45);   // in radians
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
     const zFar = 100.0;
@@ -294,27 +306,6 @@ export class VisualizerComponent implements AfterViewInit {
     this.canvas.nativeElement.height = h;
     this.ctx.viewport(0, 0, w, h);
 
-  }
-
-  private rgbaNorm(hex, opac?: any) {
-    if (hex[0] == '#')
-		hex = hex.slice(1);
-
-    const rv = parseInt(hex.substring(0,2), 16) / 255.0;
-    const gv = parseInt(hex.substring(2,4), 16) / 255.0;
-    const bv = parseInt(hex.substring(4,6), 16) / 255.0;
-
-    if (opac === null || typeof opac === "undefined")
-    	opac = 1.0;
-    else
-    	opac /= 255.0;
-
-    return {r: rv, g: gv, b: bv, a: opac}
-  }
-
-  private radian(degree: number){
-    let rad = degree*(Math.PI/1080);
-    return rad;
   }
 
 }

@@ -79,3 +79,42 @@ a:hover {
   background: #FF69B4;
   cursor: pointer;
 }
+
+#palletescontainer {
+  position: absolute;
+  z-index: 1;
+  top: 460px;
+  right: 180px;
+  opacity: 0%;
+
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+#newpalletecontainer {
+  position: absolute;
+  z-index: 1;
+  top: 500px;
+  right: 180px;
+  opacity: 0%;
+
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+select {
+  border: 1px solid white;
+  background: none;
+  color: white;
+}
+
+option {
+  background-color: black;
+  color: white;
+}
+
+input {
+  border: 1px solid white;
+  background: none;
+  color: white;
+}

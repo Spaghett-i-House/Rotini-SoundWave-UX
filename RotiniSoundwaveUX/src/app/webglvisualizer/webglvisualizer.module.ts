@@ -1,16 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VisualizerComponent } from './visualizer/visualizer.component';
+import { CanvasvisualizerComponent } from './canvasvisualizer/canvasvisualizer.component';
 
 
 
 @NgModule({
-  declarations: [VisualizerComponent],
+  declarations: [VisualizerComponent, CanvasvisualizerComponent],
   imports: [
     CommonModule
   ],
   exports: [
-    VisualizerComponent
+    VisualizerComponent, CanvasvisualizerComponent
   ]
 })
 export class WebglvisualizerModule { }

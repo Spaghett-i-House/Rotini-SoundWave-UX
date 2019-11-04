@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NetworkaudioComponent } from './networkaudio.component';
+import { CanvasvisualizerComponent } from './canvasvisualizer.component';
 
-describe('NetworkaudioComponent', () => {
-  let component: NetworkaudioComponent;
-  let fixture: ComponentFixture<NetworkaudioComponent>;
+describe('CanvasvisualizerComponent', () => {
+  let component: CanvasvisualizerComponent;
+  let fixture: ComponentFixture<CanvasvisualizerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NetworkaudioComponent ]
+      declarations: [ CanvasvisualizerComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NetworkaudioComponent);
+    fixture = TestBed.createComponent(CanvasvisualizerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,3 +1,7 @@
+/**
+ * types.ts provides a module of used types in audio/sockets
+ */
+
 // Actions you can take on the App
 export enum Action {
     JOINED,
@@ -20,9 +24,6 @@ export enum AudioType {
     FLOAT32
 }
 
-export type FFTBlock  = {
-    frequency: number,
-    magnitude: number
-}
+export type FFTBlock  = [number, number] //frequency, magnitude
 
 export type FFTSpectrum = FFTBlock[];

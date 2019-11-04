@@ -16,7 +16,7 @@ export class AppComponent {
     this.navOpen = false;
   }
 
-  settings_hide(){
+  onSidebarToggle(event){
     this.navOpen = !this.navOpen;
   }
 }

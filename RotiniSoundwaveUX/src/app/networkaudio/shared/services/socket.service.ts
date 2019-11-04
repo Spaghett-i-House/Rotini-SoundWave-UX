@@ -5,10 +5,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
+import {Subject} from 'rxjs/Subject';
 import { Event, Action , FFTBlock, FFTSpectrum} from '../model/types';
 import * as socketIo from 'socket.io-client';
-import { Browseraudio } from '../classes/browseraudio';
-
+import { SettingsService } from 'src/app/settings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,75 +19,92 @@ export class SocketService {
    */
 
   private socket: socketIo; //the websocket connection
-  private audioQueue: Browseraudio;
+  private isConnected: boolean;
+  private connectionTimeout: number; //timeout id so we can clear it later
+  private audioDataFrame: Map<number, number>;
+  private deviceNames: string[];
+  private audioObserver: Observable<Map<number, number>>;
+  private observers: Observer<Map<number, number>>[];
 
   constructor(){
     this.connectSocket = this.connectSocket.bind(this);
-    this.audioQueue = new Browseraudio();
+    this.audioDataFrame = new Map<number, number>(); 
+    this.observers = [];
+    this.audioObserver = new Observable(this.multiCastSequenceSubscriber());
   }
-  //constructor(nodeAddress: string) {
-    /**
-     * @param nodeAddress: the address where the rotini-sourndnode websocket should be located
-     */
-    // connect socket
-    //this.socket = socketIo(nodeAddress);
-  //}
 
+  /**
+   * multiCastSequenceSubscriber: subscribes to the audio stream, used to initialize observer
+   * @return a callable to unsubscribe from audio stream
+   */
+  private multiCastSequenceSubscriber(){
+    return (observer) => {
+      this.observers.push(observer);
+      //start sequence if this is the first observer
+      return {
+        unsubscribe(){
+          this.observers.splice(this.observers.indexOf(observer), 1);
+        }
+      }
+    }
+  }
+
+  /**
+   * connectSocket: attempts a connection to a remote websocket for audio
+   * @param nodeAddress the address of the websocket to connect ip:port
+   */
   connectSocket(nodeAddress: String){
     this.socket = socketIo(nodeAddress);
+    this.connectionTimeout = setTimeout(() => {
+      console.log("Socket connection timed out");
+      this.close();
+      this.connectionTimeout = null;
+    }, 1000);
     this.socket.on('audio', (audioBytes: FFTSpectrum) => {
-      //console.log(audioBytes);
-      this.audioQueue.setAudioBytes(audioBytes);
+      this.audioDataFrame = new Map<number, number>(audioBytes);
+      this.observers.forEach(obs => obs.next(this.audioDataFrame));
+    });
+    this.socket.on('device_list', (deviceList: string[]) => {
+      this.deviceNames = deviceList;
+    });
+    this.socket.on('disconnected', () => {
+      this.close();
+    });
+    this.socket.on('ping', () => {
+      this.isConnected = true
+      clearTimeout(this.connectionTimeout);
+      this.connectionTimeout = null;
     });
   }
 
+  /**
+   * returns a boolean true if the socket is connected, false if otherwise
+   */
   checkSocketConnected(){
-    if(this.socket){
-      return true;
-    }
-    else{
-      return false;
-    }
+    return this.isConnected;
   }
 
-  getAudiodataStream(): Observable<FFTSpectrum>{
+  /**
+   * provides a way to access the multiplexed observer, caller can subscribe
+   */
+  getAudiodataStream(): Observable<Map<number, number>>{
     /**
      * getAudiodataStream: request a stream for audio bytes received from server
      * @returns an observable to subscribe to
      */
-    return new Observable<FFTSpectrum>(observer => {
-      // audio is tranported as an event with an arraybuffer of audio bytes (short for now)
-      this.socket.on('audio', (audioBytes: FFTSpectrum) => {
-        this.audioQueue.setAudioBytes(audioBytes);
-        observer.next(audioBytes);
-      })
-    });
+    return this.audioObserver;
   }
 
-  getDeviceListInterval(): Observable<string[]>{
-    /**
-     * getDeviceListInterval: requests a stream for receiving the periodic transmission of available
-     * audio devices from a connected rotini-soundnode
-     * @returns an observable to subscribe to containing lists of device names
-     */
-    return new Observable<string[]>(observer => {
-      // device_list is emitted periodically, its argument is an array of device names
-      this.socket.on('device_list', (deviceList: string[]) => {
-        observer.next(deviceList);
-      });
-    });
+  /**
+   * provides access to the most recent frame of without subscription
+   */
+  getAudioDataFrame(): Map<number, number>{
+    return this.audioDataFrame;
   }
 
-  onEvent(event: Event): Observable<any>{
-    /**
-     * onEvent: gets a stream of events like connection and disconnection
-     * @return an observable to any events that arise in the socket
-     */
-    return new Observable<Event>(observer => {
-      this.socket.on(event, () => observer.next());
-    })
-  }
-
+  /**
+   * signals connected socket to stop the stream of audio
+   */
   stopStream(){
     /**
      * stopStream: emits a stop_stream event to signal a rotini-soundnode to stop sending audio data
@@ -105,10 +122,6 @@ export class SocketService {
     this.socket.emit('start_stream', deviceName);
   }
 
-  getCurrentFFT(){
-    return this.audioQueue.getAudioFrequencyData();
-  }
-
   close(){
     /**
      * close: shuts down socket
@@ -117,5 +130,7 @@ export class SocketService {
     if(this.socket){
       this.socket.close();
     }
+    this.isConnected = false;
+    this.socket = null;
   }
 }
