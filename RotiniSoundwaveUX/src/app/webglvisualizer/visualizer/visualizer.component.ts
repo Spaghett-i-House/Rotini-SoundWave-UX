@@ -72,7 +72,7 @@ export class VisualizerComponent implements AfterViewInit {
         modelViewMatrix: this.ctx.getUniformLocation(this.shaderProgram, 'uModelViewMatrix'),
         },
     };
-    const cFidelity = 20;
+    const cFidelity = 100;
     this.positions = [0.0, 0.0];
 
     let render = (now) => {
