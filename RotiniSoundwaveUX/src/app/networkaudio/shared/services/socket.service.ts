@@ -122,6 +122,19 @@ export class SocketService {
     this.socket.emit('start_stream', deviceName);
   }
 
+  /**
+   * setFilter: applies a filter to an oncomming fft stream
+   * @param highval: the high frequency
+   * @param lowval : the low frequency
+   */
+  setFilter(highval: number, lowval: number){
+    this.socket.emit('add_filter', highval, lowval);
+  }
+
+  clearFilter(){
+    this.socket.emit('remove_filter');
+  }
+
   close(){
     /**
      * close: shuts down socket
