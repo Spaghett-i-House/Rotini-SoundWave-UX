@@ -85,7 +85,7 @@ a:hover {
   z-index: 1;
   top: 460px;
   right: 180px;
-  opacity: 0%;
+  opacity: 100%;
 
   -webkit-transition: .2s;
   transition: opacity .2s;
@@ -96,7 +96,7 @@ a:hover {
   z-index: 1;
   top: 500px;
   right: 180px;
-  opacity: 0%;
+  opacity: 100%;
 
   -webkit-transition: .2s;
   transition: opacity .2s;
