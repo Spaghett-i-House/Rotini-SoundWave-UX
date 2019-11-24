@@ -7,6 +7,12 @@
             <option *ngFor="let pal of palletes_names">{{pal}}</option>
         </select>
     </div>
+    <div id="frequenciesContainer" *ngIf="show['frequencies']">
+        <form id="frequenciesform">
+          <input #f1 type="text" value="20" placeholder="Invalid lower frequency." (change)="updateFreqs(f1, f2)">
+          <input #f2 type="text" value="22000" placeholder="Invalid upper frequency." (change)="updateFreqs(f1, f2)"><span id="hz">20 - 22000 (Hz)</span>
+        </form>
+    </div>
     <div id="newpalletecontainer" *ngIf="show['newPalletes']">
         <form id="newpalletes" style="margin-bottom: 200px;">
           <input #tname type="text" placeholder="Name" id="palName">
@@ -24,6 +30,7 @@
         <button (click)="stopStream()" *ngIf="audioserv.isConnected">Stop</button>
     </div>
     <a (click)="oc_toggle('resolution')">Resolution</a>
+    <a (click)="oc_toggle('frequencies')">Frequencies</a>
     <a (click)="oc_toggle('palletes')">Pallete</a>
     <a (click)="oc_toggle('newPalletes')">New Pallete</a>
     <a (click)="oc_toggle('sources')">Sources</a>

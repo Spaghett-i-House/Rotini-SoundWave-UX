@@ -13,12 +13,12 @@ import { SocketService } from '../networkaudio/shared/services/socket.service';
 })
 export class SidebarComponent implements OnInit {
 
-
   private show = {
     "sources": false,
     "newPalletes": false,
     "palletes": false,
-    "resolution": false
+    "resolution": false,
+    "frequencies": false
   }
   private selectedPallete: string;
   private palletes: string[];
@@ -27,10 +27,15 @@ export class SidebarComponent implements OnInit {
   private devices: string[];
   private streamDevice: string;
   private palletes_names: string[];
+  public freq1: number;
+  public freq2: number;
 
-  constructor(private settings: SettingsService, private audioserv: SocketService) {}
+  constructor(private settings: SettingsService, private audioserv: SocketService) {
+    this.freq1 = 20;
+    this.freq2 = 2200;  
+  }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   /**
    * toggles a subsection to show
@@ -39,6 +44,29 @@ export class SidebarComponent implements OnInit {
   oc_toggle(name){
     this.updatePalleteList();
     this.show[name] = !this.show[name];
+  }
+
+  /**
+   * updateFreqs: updates the upper and lower frequency bounds
+   */
+  updateFreqs(f1, f2) {
+    let valid = true;
+    let f1v = parseFloat(f1.value);
+    let f2v = parseFloat(f2.value);
+
+    if (isNaN(f1v) || f1v < 20 || f1v > 22000 || (!isNaN(f2v) && f1v > f2v)) {
+      f1.value = ""
+      valid = false;
+    } 
+    if (isNaN(f2v) || f2v < 20 || f2v > 22000 || (!isNaN(f1v) && f1v > f2v)) {
+      f2.value = ""
+      valid = false;
+    }
+
+    if (valid) {
+      this.freq1 = f1v;
+      this.freq2 = f2v;
+    }
   }
 
   /**

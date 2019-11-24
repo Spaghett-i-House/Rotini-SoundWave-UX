@@ -84,7 +84,7 @@ a:hover {
 #palletescontainer {
   position: absolute;
   z-index: 1;
-  top: 460px;
+  top: 510px;
   right: 180px;
   opacity: 100%;
 
@@ -95,7 +95,33 @@ a:hover {
 #newpalletecontainer {
   position: absolute;
   z-index: 1;
-  top: 500px;
+  top: 550px;
+  right: 180px;
+  opacity: 100%;
+
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+#hz {
+  color: white;
+}
+
+#frequenciesContainer {
+  position: absolute;
+  z-index: 1;
+  top: 450px;
+  right: 180px;
+  opacity: 100%;
+
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+#sourceContainer {  
+  position: absolute;
+  z-index: 1;
+  top: 650px;
   right: 180px;
   opacity: 100%;
 
