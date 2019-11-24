@@ -66,6 +66,7 @@ export class SidebarComponent implements OnInit {
     if (valid) {
       this.freq1 = f1v;
       this.freq2 = f2v;
+      this.audioserv.setFilter(this.freq1, this.freq2);
     }
   }
 
