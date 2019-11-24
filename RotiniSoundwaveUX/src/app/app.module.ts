@@ -8,12 +8,14 @@ import { WebglvisualizerModule } from './webglvisualizer/webglvisualizer.module'
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { FormsModule } from '@angular/forms';
 import { GearComponent } from './gear/gear.component';
+import { MainmodalComponent } from './modal/mainmodal/mainmodal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SidebarComponent,
     GearComponent,
+    MainmodalComponent,
   ],
   imports: [
     BrowserModule,
