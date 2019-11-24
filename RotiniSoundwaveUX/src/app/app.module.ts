@@ -8,21 +8,23 @@ import { WebglvisualizerModule } from './webglvisualizer/webglvisualizer.module'
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { FormsModule } from '@angular/forms';
 import { GearComponent } from './gear/gear.component';
-import { MainmodalComponent } from './modal/mainmodal/mainmodal.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { ModalComponent } from './modal/modal/modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SidebarComponent,
     GearComponent,
-    MainmodalComponent,
+    ModalComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     NetworkaudioModule,
     WebglvisualizerModule,
-    FormsModule
+    FormsModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]
