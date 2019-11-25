@@ -30,6 +30,11 @@ export class SidebarComponent implements OnInit {
   public freq1: number;
   public freq2: number;
 
+  /**
+   * constructor: sets base values for the sidebar
+   * @param settings: the Settings service to be injected
+   * @param audioserv: the audio socket service to be injected
+   */
   constructor(private settings: SettingsService, private audioserv: SocketService) {
     this.freq1 = 20;
     this.freq2 = 2200;  
