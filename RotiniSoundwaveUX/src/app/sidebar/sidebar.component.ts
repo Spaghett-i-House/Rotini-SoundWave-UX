@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {SettingsService, AppSettings} from '../settings.service';
 import { SocketService } from '../networkaudio/shared/services/socket.service';
-
+import { UserService } from '../services/user.service';
 
 /**
  * SidebarComponent: the controller for the settings sidebar on right side of screen
@@ -35,7 +35,8 @@ export class SidebarComponent implements OnInit {
    * @param settings: the Settings service to be injected
    * @param audioserv: the audio socket service to be injected
    */
-  constructor(private settings: SettingsService, private audioserv: SocketService) {
+  constructor(private settings: SettingsService, private audioserv: SocketService,
+    private userservice: UserService) {
     this.freq1 = 20;
     this.freq2 = 2200;  
   }
@@ -79,10 +80,11 @@ export class SidebarComponent implements OnInit {
    * updatePalleteList: updates the list of palletes in settings
    */
   updatePalleteList(){
-    let palletes_names = this.settings.getSettings().palletes;
+    let palletes_names = this.userservice.user.getColorProfileNames();
+    //let palletes_names = this.settings.getSettings().palletes;
     this.palletes_names = [];
     console.log(palletes_names);
-    for(let name in palletes_names){
+    for(let name of palletes_names){
       console.log(name);
       this.palletes_names.push(name);
     }
@@ -103,6 +105,7 @@ export class SidebarComponent implements OnInit {
    * @param thex2 the hex value of the second color of the pallete
    */
   oc_newpalletecontainer(tname, thex1, thex2){
+    this.userservice.addColorPreset(tname, [thex1, thex2]);
     this.settings.addPallete(tname, thex1, thex2);
     this.settings.pushSettings();
   }

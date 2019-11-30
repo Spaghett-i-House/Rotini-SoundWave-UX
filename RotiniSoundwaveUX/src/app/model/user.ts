@@ -6,16 +6,16 @@ export class User {
         this.registeredDevices = [];
         this.colorProfiles = new Map<string, Array<string>>();
         //add the default values, candy and halloween
-        this.colorProfiles['candy'] = ["#ffd1dc", "#ffd9e2"];
-        this.colorProfiles['halloween'] = ['#ff7a1c', "#2b2b2b"];
+        this.colorProfiles.set('candy', ["#ffd1dc", "#ffd9e2"]);
+        this.colorProfiles.set('halloween', ['#ff7a1c', "#2b2b2b"]);
     }
 
     public getColorProfileNames(){
-        return this.colorProfiles.keys();
+        return Array.from(this.colorProfiles.keys());
     }
 
     public getColorProfile(profileName: string): Array<string>{
-        return this.colorProfiles[profileName];
+        return this.colorProfiles.get(profileName);
     }
 
     public getRegisteredDevices(): Array<[string, number]>{
@@ -28,7 +28,7 @@ export class User {
     }
 
     public addProfile(name: string, colors: Array<string>){
-        this.colorProfiles[name] = colors;
+        this.colorProfiles.set(name, colors);
     }
 }
 

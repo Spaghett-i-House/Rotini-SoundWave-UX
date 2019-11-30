@@ -10,9 +10,11 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
   providedIn: 'root'
 })
 export class UserService {
-  private user: User;
+  public user: User;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.user = new User();
+  }
 
   /**
    * login provides an external interface to allow logging in to the service
@@ -100,10 +102,6 @@ export class UserService {
       throw err;
     }
   }
-
-
-
-
 }
 
 interface UserDefinedParameters{
