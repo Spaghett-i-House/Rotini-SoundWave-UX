@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { UserapiService } from './userapi.service';
+import { VisualizerService } from './visualizer.service';
 
-describe('UserapiService', () => {
+describe('VisualizerService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: UserapiService = TestBed.get(UserapiService);
+    const service: VisualizerService = TestBed.get(VisualizerService);
     expect(service).toBeTruthy();
   });
 });

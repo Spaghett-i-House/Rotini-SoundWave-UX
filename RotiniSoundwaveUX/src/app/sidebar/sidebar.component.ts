@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {SettingsService, AppSettings} from '../settings.service';
 import { SocketService } from '../networkaudio/shared/services/socket.service';
 import { UserService } from '../services/user.service';
+import { VisualizerService } from '../services/visualizer.service';
 
 /**
  * SidebarComponent: the controller for the settings sidebar on right side of screen
@@ -36,7 +37,7 @@ export class SidebarComponent implements OnInit {
    * @param audioserv: the audio socket service to be injected
    */
   constructor(private settings: SettingsService, private audioserv: SocketService,
-    private userservice: UserService) {
+    private userservice: UserService, private visService: VisualizerService) {
     this.freq1 = 20;
     this.freq2 = 2200;  
   }
@@ -94,6 +95,7 @@ export class SidebarComponent implements OnInit {
    * oc_palletes: changes the current active pallete in settings
    */
   oc_palletes(){
+    this.visService.changeColor(this.userservice.user.getColorProfile(this.selectedPallete));
     this.settings.getSettings().active_pallete = this.selectedPallete;
     this.settings.pushSettings();
   }
@@ -106,15 +108,16 @@ export class SidebarComponent implements OnInit {
    */
   oc_newpalletecontainer(tname, thex1, thex2){
     this.userservice.addColorPreset(tname, [thex1, thex2]);
-    this.settings.addPallete(tname, thex1, thex2);
-    this.settings.pushSettings();
+    this.updatePalleteList();
+    /*this.settings.addPallete(tname, thex1, thex2);
+    this.settings.pushSettings();*/
   }
 
   /**
    * Triggered on the resolution slider changing, changes the resolution of render
    */
   oi_resolution(){
-    this.settings.setResolution(this.resolution);
+    this.visService.changeResolution(this.resolution);
   }
 
   /**

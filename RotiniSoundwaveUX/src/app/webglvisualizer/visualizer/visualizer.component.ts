@@ -31,7 +31,7 @@ void main() {
 }`;
 
 @Component({
-  selector: 'app-visualizer',
+  selector: 'app-visualizera',
   templateUrl: './visualizer.component.html',
   styleUrls: ['./visualizer.component.css']
 })

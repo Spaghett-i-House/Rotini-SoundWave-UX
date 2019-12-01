@@ -9,14 +9,14 @@ import { WebglvisualizerModule } from './webglvisualizer/webglvisualizer.module'
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { FormsModule } from '@angular/forms';
 import { GearComponent } from './gear/gear.component';
-import { MenucontrollerComponent } from './components/menucontroller/menucontroller.component';
+import { VisualizerComponent } from './components/visualizer/visualizer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SidebarComponent,
     GearComponent,
-    MenucontrollerComponent,
+    VisualizerComponent,
   ],
   imports: [
     BrowserModule,
