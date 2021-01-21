@@ -23,7 +23,7 @@
     "ajv": "^6.10.2",
     "rxjs": "~6.4.0",
     "rxjs-compat": "^6.5.3",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "socket.io-stream": "^0.9.1",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
